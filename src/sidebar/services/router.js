@@ -5,7 +5,7 @@ import * as queryString from 'query-string';
  * implied by the URL and the corresponding route state in the store.
  */
 // @inject
-export default function router($window, store) {
+export default function router($window, isNotebook, store) {
   /**
    * Return the name and parameters of the current route.
    */
@@ -15,6 +15,9 @@ export default function router($window, store) {
     const params = queryString.parse($window.location.search);
 
     let route;
+    if (isNotebook) {
+      return { route: 'stream', params };
+    }
     switch (pathSegments[0]) {
       case 'a':
         route = 'annotation';

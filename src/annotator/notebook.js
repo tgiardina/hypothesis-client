@@ -1,9 +1,35 @@
 import Delegator from './delegator';
+import { createSidebarConfig } from './config/sidebar';
+
+/**
+ * Create the iframe that will load the sidebar application.
+ *
+ * @return {HTMLIFrameElement}
+ */
+function createNotebookFrame(config) {
+  const sidebarConfig = createSidebarConfig(config);
+  sidebarConfig.isNotebook = true;
+  const configParam =
+    'config=' + encodeURIComponent(JSON.stringify(sidebarConfig));
+  const sidebarAppSrc = config.sidebarAppUrl + '#' + configParam;
+
+  const sidebarFrame = document.createElement('iframe');
+
+  // Enable media in annotations to be shown fullscreen
+  sidebarFrame.setAttribute('allowfullscreen', '');
+
+  sidebarFrame.src = sidebarAppSrc;
+  sidebarFrame.title = 'Hypothesis annotation notebook';
+  sidebarFrame.className = 'notebook-inner';
+
+  return sidebarFrame;
+}
 
 export default class Notebook extends Delegator {
   constructor(element, config) {
     super(element, config);
     this.config = config;
+    this.frame = null;
     // TODO?: handle external container?
 
     this.container = document.createElement('div');
@@ -11,26 +37,22 @@ export default class Notebook extends Delegator {
     // TODO?: Is there any necessity to handle theme-clean?
     this.container.className = 'notebook-outer';
 
-    // TODO: this.inner will become this.frame (likely) and will be an iframe
-    this.inner = document.createElement('div');
-    this.inner.className = 'notebook-inner';
-    // TODO: entirely temporary
-    this.inner.onclick = event => {
-      event.stopPropagation();
-      this.publish('hideNotebook');
-    };
-
-    this.container.appendChild(this.inner);
-    this.element.appendChild(this.container);
-
     this.subscribe('showNotebook', () => this.show());
     this.subscribe('hideNotebook', () => this.hide());
     // If the sidebar has opened, get out of the way
     this.subscribe('sidebarOpened', () => this.hide());
   }
 
+  init() {
+    if (!this.frame) {
+      this.frame = createNotebookFrame(this.config);
+      this.container.appendChild(this.frame);
+      this.element.appendChild(this.container);
+    }
+  }
+
   show() {
-    // TODO check for iframe initialization
+    this.init();
     this.container.style.display = '';
   }
 

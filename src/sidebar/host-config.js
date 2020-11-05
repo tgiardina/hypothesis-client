@@ -50,6 +50,9 @@ export default function hostPageConfig(window) {
     // Forces the sidebar to filter annotations to a single user.
     'focus',
 
+    // Configure the client application in notebook mode/route
+    'isNotebook',
+
     // Fetch config from a parent frame.
     'requestConfigFromFrame',
 

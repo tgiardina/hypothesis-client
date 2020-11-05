@@ -71,6 +71,7 @@
  * @prop {string} [group] - Direct-linked group ID
  * @prop {string} [query] - Initial filter query
  * @prop {string} [appType] - Method used to load the client
+ * @prop {boolean} [isNotebook]
  * @prop {boolean} [openSidebar] - Whether to open the sidebar on the initial load
  * @prop {boolean} [showHighlights] - Whether to show highlights
  * @prop {Object} [branding] -
