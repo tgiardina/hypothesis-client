@@ -10,6 +10,8 @@ import mockImportedComponents from '../../../test-util/mock-imported-components'
 describe('UserMenu', () => {
   let fakeAuth;
   let fakeBridge;
+  let fakeFeatures;
+  let fakeFrameSync;
   let fakeIsThirdPartyUser;
   let fakeOnLogout;
   let fakeServiceConfig;
@@ -21,6 +23,8 @@ describe('UserMenu', () => {
       <UserMenu
         auth={fakeAuth}
         bridge={fakeBridge}
+        features={fakeFeatures}
+        frameSync={fakeFrameSync}
         onLogout={fakeOnLogout}
         serviceUrl={fakeServiceUrl}
         settings={fakeSettings}
@@ -42,6 +46,8 @@ describe('UserMenu', () => {
       username: 'eleanorFishy',
     };
     fakeBridge = { call: sinon.stub() };
+    fakeFeatures = { flagEnabled: sinon.stub().returns(false) };
+    fakeFrameSync = { showNotebook: sinon.stub() };
     fakeIsThirdPartyUser = sinon.stub();
     fakeOnLogout = sinon.stub();
     fakeServiceConfig = sinon.stub();
@@ -179,6 +185,37 @@ describe('UserMenu', () => {
 
       const accountMenuItem = findMenuItem(wrapper, 'Account settings');
       assert.isFalse(accountMenuItem.exists());
+    });
+  });
+
+  describe('open notebook item', () => {
+    context('notebook feature is enabled', () => {
+      it('includes the open notebook item', () => {
+        fakeFeatures.flagEnabled.withArgs('notebook_launch').returns(true);
+        const wrapper = createUserMenu();
+
+        const openNotebookItem = findMenuItem(wrapper, 'Open notebook');
+        assert.isTrue(openNotebookItem.exists());
+      });
+
+      it('triggers a frameSync message when open-notebook item is clicked', () => {
+        fakeFeatures.flagEnabled.withArgs('notebook_launch').returns(true);
+        const wrapper = createUserMenu();
+
+        const openNotebookItem = findMenuItem(wrapper, 'Open notebook');
+        openNotebookItem.props().onClick();
+        assert.calledOnce(fakeFrameSync.showNotebook);
+      });
+    });
+
+    context('notebook feature is not enabled', () => {
+      it('does not include the open notebook item', () => {
+        fakeFeatures.flagEnabled.withArgs('notebook_launch').returns(false);
+        const wrapper = createUserMenu();
+
+        const openNotebookItem = findMenuItem(wrapper, 'Open notebook');
+        assert.isFalse(openNotebookItem.exists());
+      });
     });
   });
 

@@ -242,4 +242,11 @@ export default function FrameSync(annotationsService, bridge, store) {
   this.scrollToAnnotation = function (tag) {
     bridge.call('scrollToAnnotation', tag);
   };
+
+  /**
+   * Open the notebook.
+   */
+  this.showNotebook = () => {
+    bridge.call('showNotebook');
+  };
 }

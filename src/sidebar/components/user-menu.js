@@ -27,6 +27,8 @@ import SvgIcon from '../../shared/components/svg-icon';
  * @typedef UserMenuProps
  * @prop {AuthState} auth - object representing authenticated user and auth status
  * @prop {() => any} onLogout - onClick callback for the "log out" button
+ * @prop {Object} features - injected service
+ * @prop {Object} frameSync - injected service
  * @prop {Object} bridge
  * @prop {ServiceUrlGetter} serviceUrl
  * @prop {MergedConfig} settings
@@ -40,7 +42,15 @@ import SvgIcon from '../../shared/components/svg-icon';
  *
  * @param {UserMenuProps} props
  */
-function UserMenu({ auth, bridge, onLogout, serviceUrl, settings }) {
+function UserMenu({
+  auth,
+  bridge,
+  features,
+  frameSync,
+  onLogout,
+  serviceUrl,
+  settings,
+}) {
   const isThirdParty = isThirdPartyUser(auth.userid, settings.authDomain);
   const service = serviceConfig(settings);
 
@@ -50,6 +60,11 @@ function UserMenu({ auth, bridge, onLogout, serviceUrl, settings }) {
     !isThirdParty || serviceSupports('onProfileRequestProvided');
   const isLogoutEnabled =
     !isThirdParty || serviceSupports('onLogoutRequestProvided');
+  const isNotebookEnabled = features.flagEnabled('notebook_launch');
+
+  const onSelectNotebook = () => {
+    frameSync.showNotebook();
+  };
 
   const onProfileSelected = () =>
     isThirdParty && bridge.call(bridgeEvents.PROFILE_REQUESTED);
@@ -86,6 +101,12 @@ function UserMenu({ auth, bridge, onLogout, serviceUrl, settings }) {
               href={serviceUrl('account.settings')}
             />
           )}
+          {isNotebookEnabled && (
+            <MenuItem
+              label="Open notebook"
+              onClick={() => onSelectNotebook()}
+            />
+          )}
         </MenuSection>
         {isLogoutEnabled && (
           <MenuSection>
@@ -101,10 +122,18 @@ UserMenu.propTypes = {
   auth: propTypes.object.isRequired,
   onLogout: propTypes.func.isRequired,
   bridge: propTypes.object.isRequired,
+  features: propTypes.object.isRequired,
+  frameSync: propTypes.object.isRequired,
   serviceUrl: propTypes.func.isRequired,
   settings: propTypes.object.isRequired,
 };
 
-UserMenu.injectedProps = ['bridge', 'serviceUrl', 'settings'];
+UserMenu.injectedProps = [
+  'bridge',
+  'features',
+  'frameSync',
+  'serviceUrl',
+  'settings',
+];
 
 export default withServices(UserMenu);
