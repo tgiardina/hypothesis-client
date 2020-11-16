@@ -1,0 +1,72 @@
+@use "../../mixins/responsive";
+@use "../../mixins/utils";
+@use "../../variables" as var;
+
+.notebook {
+  display: grid;
+  row-gap: var.$layout-space--xsmall;
+  grid-template-areas:
+    'subheading'
+    'filters'
+    'resultCount'
+    'items';
+
+  h1 {
+    display: inline;
+    font-size: var.$font-size--heading;
+    font-weight: bold;
+  }
+
+  h2 {
+    display: inline;
+    font-size: var.$font-size--subheading;
+    font-weight: bold;
+  }
+
+  &__subheading {
+    //background-color: rgba(159, 197, 248, 0.5);
+    grid-area: subheading;
+  }
+
+  &__filters {
+    //background-color: rgba(213, 166, 189, 0.5);
+    grid-area: filters;
+    align-self: end;
+  }
+
+  &__result-count {
+    //background-color: rgba(182, 215, 168, 0.5);
+    grid-area: resultCount;
+    text-align: right;
+    align-self: end;
+  }
+
+  &__items {
+    //background-color: rgba(255, 229, 153, 0.5);
+    grid-area: items;
+  }
+
+  @include responsive.tablet-and-up {
+    grid-template-areas:
+      'subheading subheading'
+      'filters resultCount'
+      'items items';
+  }
+}
+
+.notebook__menu-label {
+  @include utils.font--large;
+  align-items: center;
+  color: var.$color-text;
+  display: flex;
+
+  // Prevent label from wrapping if top bar is too narrow to fit all of its
+  // items.
+  flex-shrink: 0;
+  font-weight: bold;
+}
+
+.notebook__menu-icon {
+  @include utils.icon--medium;
+  margin-right: var.$layout-space--xsmall;
+}

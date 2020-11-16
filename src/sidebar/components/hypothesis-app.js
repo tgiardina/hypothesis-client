@@ -14,6 +14,7 @@ import { withServices } from '../util/service-context';
 
 import AnnotationViewerContent from './annotation-viewer-content';
 import HelpPanel from './help-panel';
+import NotebookContent from './notebook-content';
 import ShareAnnotationsPanel from './share-annotations-panel';
 import SidebarContent from './sidebar-content';
 import StreamContent from './stream-content';
@@ -177,13 +178,15 @@ function HypothesisApp({
       })}
       style={backgroundStyle}
     >
-      <TopBar
-        auth={authState}
-        onLogin={login}
-        onSignUp={signUp}
-        onLogout={logout}
-        isSidebar={isSidebar}
-      />
+      {route !== 'notebook' && (
+        <TopBar
+          auth={authState}
+          onLogin={login}
+          onSignUp={signUp}
+          onLogout={logout}
+          isSidebar={isSidebar}
+        />
+      )}
       <div className="hypothesis-app__content">
         <ToastMessages />
         <HelpPanel auth={authState} />
@@ -194,7 +197,7 @@ function HypothesisApp({
             {route === 'annotation' && (
               <AnnotationViewerContent onLogin={login} />
             )}
-            {route === 'notebook' && <StreamContent />}
+            {route === 'notebook' && <NotebookContent />}
             {route === 'stream' && <StreamContent />}
             {route === 'sidebar' && (
               <SidebarContent onLogin={login} onSignUp={signUp} />
