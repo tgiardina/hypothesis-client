@@ -1,8 +1,8 @@
 import { createElement } from 'preact';
-import { useCallback, useEffect } from 'preact/hooks';
+import { useEffect } from 'preact/hooks';
 import propTypes from 'prop-types';
 
-import * as searchFilter from '../util/search-filter';
+//import * as searchFilter from '../util/search-filter';
 import { withServices } from '../util/service-context';
 import useRootThread from './hooks/use-root-thread';
 import useStore from '../store/use-store';
@@ -11,11 +11,11 @@ import Menu from './menu';
 import MenuItem from './menu-item';
 import SvgIcon from '../../shared/components/svg-icon';
 import ThreadList from './thread-list';
+//import loadAnnotationsService from '../services/load-annotations';
 
 /**
  * @typedef NotebookContentProps
- * @prop {Object} [api] - Injected service
- * @prop {Object} [toastMessenger] - Injected service
+ * @prop {Object} [loadAnnotationsService] - Injected service
  */
 
 /**
@@ -23,62 +23,13 @@ import ThreadList from './thread-list';
  *
  * @param {NotebookContentProps} props
  */
-function NotebookContent({ api, toastMessenger }) {
-  const addAnnotations = useStore(store => store.addAnnotations);
-  const annotationFetchStarted = useStore(
-    store => store.annotationFetchStarted
-  );
-  const annotationFetchFinished = useStore(
-    store => store.annotationFetchFinished
-  );
-  const clearAnnotations = useStore(store => store.clearAnnotations);
-  const currentQuery = useStore(store => store.routeParams().q);
-  const setSortKey = useStore(store => store.setSortKey);
+function NotebookContent({ loadAnnotationsService }) {
+  const focusedGroupId = useStore(store => store.focusedGroupId());
 
-  /**
-   * Fetch annotations from the API and display them in the notebook.
-   *
-   * @param {string} query - The user-supplied search query
-   */
-  const loadAnnotations = useCallback(
-    async query => {
-      const queryParams = {
-        _separate_replies: true,
-
-        // nb. There is currently no way to load anything except the first
-        // 20 matching annotations in the UI.
-        offset: 0,
-        limit: 20,
-
-        ...searchFilter.toObject(query),
-      };
-      try {
-        annotationFetchStarted();
-        const results = await api.search(queryParams);
-        addAnnotations([...results.rows, ...results.replies]);
-      } finally {
-        annotationFetchFinished();
-      }
-    },
-    [addAnnotations, annotationFetchStarted, annotationFetchFinished, api]
-  );
-
-  // Update the notebook when this route is initially displayed and whenever
-  // the search query is updated.
+  // Reload annotations when group, user or document search URIs change
   useEffect(() => {
-    // Sort the Notebook so that the newest annotations are at the top
-    setSortKey('Newest');
-    clearAnnotations();
-    loadAnnotations(currentQuery).catch(err => {
-      toastMessenger.error(`Unable to fetch annotations: ${err.message}`);
-    });
-  }, [
-    clearAnnotations,
-    currentQuery,
-    loadAnnotations,
-    setSortKey,
-    toastMessenger,
-  ]);
+    loadAnnotationsService.load({ groupId: focusedGroupId });
+  }, [loadAnnotationsService, focusedGroupId]);
 
   const rootThread = useRootThread();
 
@@ -113,10 +64,9 @@ function NotebookContent({ api, toastMessenger }) {
 }
 
 NotebookContent.propTypes = {
-  api: propTypes.object,
-  toastMessenger: propTypes.object,
+  loadAnnotationsService: propTypes.object,
 };
 
-NotebookContent.injectedProps = ['api', 'toastMessenger'];
+NotebookContent.injectedProps = ['loadAnnotationsService'];
 
 export default withServices(NotebookContent);

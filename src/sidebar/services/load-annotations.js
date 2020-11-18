@@ -36,6 +36,8 @@ export default function loadAnnotationsService(
 
       streamFilter.resetFilter().addClause('/uri', 'one_of', uris);
       streamer.setConfig('filter', { filter: streamFilter.getFilter() });
+    } else {
+      searchAndLoad({ groupId });
     }
   }
 

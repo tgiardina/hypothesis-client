@@ -6,8 +6,9 @@ import { createSidebarConfig } from './config/sidebar';
  *
  * @return {HTMLIFrameElement}
  */
-function createNotebookFrame(config) {
+function createNotebookFrame(config, groupId) {
   const sidebarConfig = createSidebarConfig(config);
+  sidebarConfig.group = groupId;
   const configParam =
     'config=' + encodeURIComponent(JSON.stringify(sidebarConfig));
   const notebookAppSrc = config.notebookAppUrl + '#' + configParam;
@@ -33,7 +34,10 @@ export default class Notebook extends Delegator {
     this.container.style.display = 'none';
     this.container.className = 'notebook-outer';
 
-    this.subscribe('showNotebook', () => this.show());
+    this.subscribe('showNotebook', groupId => {
+      this.groupId = groupId;
+      this.show();
+    });
     this.subscribe('hideNotebook', () => this.hide());
     // If the sidebar has opened, get out of the way
     this.subscribe('sidebarOpened', () => this.hide());
@@ -41,7 +45,7 @@ export default class Notebook extends Delegator {
 
   init() {
     if (!this.frame) {
-      this.frame = createNotebookFrame(this.options);
+      this.frame = createNotebookFrame(this.options, this.groupId);
       this.container.appendChild(this.frame);
       this.element.appendChild(this.container);
     }
