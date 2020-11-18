@@ -412,6 +412,32 @@ const annotationCount = createSelector(
   annotations => countIf(annotations, metadata.isAnnotation)
 );
 
+const annotationsUsers = createSelector(
+  state => state.annotations,
+  annotations => {
+    const encounteredUsers = [];
+    const uniqueUsers = [];
+
+    annotations.forEach(annotation => {
+      if (!encounteredUsers.includes(annotation.user)) {
+        uniqueUsers.push({
+          userId: annotation.user,
+          displayName: annotation.user_info?.display_name ?? annotation.user,
+        });
+        encounteredUsers.push(annotation.user);
+      }
+    });
+
+    uniqueUsers.sort((a, b) => {
+      if (a.displayName > b.displayName) {
+        return 1;
+      }
+      return -1;
+    });
+    return uniqueUsers;
+  }
+);
+
 /**
  * Does the annotation indicated by `id` exist in the collection?
  *
@@ -556,10 +582,11 @@ function savedAnnotations(state) {
  * @prop {typeof unhideAnnotation} unhideAnnotation
  * @prop {typeof updateAnchorStatus} updateAnchorStatus
  * @prop {typeof updateFlagStatus} updateFlagStatus
- 
+
  *
  * // Selectors
  * @prop {() => number} annotationCount
+ * @prop {() => Object[]} annotationsUsers
  * @prop {(id: string) => boolean} annotationExists
  * @prop {(id: string) => Annotation} findAnnotationByID
  * @prop {(tags: string[]) => string[]} findIDsForTags
@@ -592,6 +619,7 @@ export default {
 
   selectors: {
     annotationCount,
+    annotationsUsers,
     annotationExists,
     findAnnotationByID,
     findIDsForTags,

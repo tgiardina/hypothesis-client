@@ -24,14 +24,17 @@ import ThreadList from './thread-list';
  * @param {NotebookContentProps} props
  */
 function NotebookContent({ loadAnnotationsService }) {
-  const focusedGroupId = useStore(store => store.focusedGroupId());
+  const focusedGroup = useStore(store => store.focusedGroup());
 
-  // Reload annotations when group, user or document search URIs change
   useEffect(() => {
-    loadAnnotationsService.load({ groupId: focusedGroupId });
-  }, [loadAnnotationsService, focusedGroupId]);
+    if (focusedGroup) {
+      loadAnnotationsService.load({ groupId: focusedGroup.id });
+    }
+  }, [loadAnnotationsService, focusedGroup]);
 
   const rootThread = useRootThread();
+  const annotationsUsers = useStore(store => store.annotationsUsers());
+  const groupName = focusedGroup ? focusedGroup.name : 'Group';
 
   const menuLabel = (
     <span className="notebook__menu-label">
@@ -42,14 +45,17 @@ function NotebookContent({ loadAnnotationsService }) {
   return (
     <div className="notebook">
       <header className="notebook__subheading">
-        <h1>Group or Course Name</h1>
+        <h1>{groupName}</h1>
       </header>
       <div className="notebook__filters">
         <Menu label={menuLabel} title="Filter by User">
-          <MenuItem
-            onClick={() => alert('selected')}
-            label="Delilah Devadamin"
-          />
+          {annotationsUsers.map(annUser => (
+            <MenuItem
+              onClick={() => alert('selected')}
+              key={annUser.userId}
+              label={annUser.displayName}
+            />
+          ))}
         </Menu>
       </div>
       <div className="notebook__result-count">
