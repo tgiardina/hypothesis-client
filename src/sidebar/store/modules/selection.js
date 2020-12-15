@@ -155,6 +155,10 @@ const update = {
     return resetSelection();
   },
 
+  SET_FILTER: function () {
+    return { ...resetSelection(), expanded: {} };
+  },
+
   SET_FILTER_QUERY: function () {
     return { ...resetSelection(), expanded: {} };
   },
