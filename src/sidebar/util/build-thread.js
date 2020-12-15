@@ -17,8 +17,9 @@
  * @prop {boolean} collapsed - Whether the replies in this thread should be
  *       rendered as collapsed (when true) or expanded (when false)
  * @prop {Thread[]} children
- * @prop {number} totalChildren - Computed count of this thread's immediate
- *       children. This count includes visually-hidden threads.
+ * @prop {number} [totalChildren] - Computed count of this thread's immediate
+ *       children. This count includes visually-hidden threads. Only present on
+ *       the root thread level.
  * @prop {number} replyCount - Computed count of all replies to a thread
  * @prop {number} depth - The thread's depth in the hierarchy
  */
@@ -31,7 +32,6 @@ const DEFAULT_THREAD_STATE = {
   depth: 0,
   visible: true,
   replyCount: 0,
-  totalChildren: 0,
 };
 
 /**
@@ -152,7 +152,6 @@ function threadAnnotations(annotations) {
     ...DEFAULT_THREAD_STATE,
     id: 'root',
     children: rootThreads,
-    totalChildren: rootThreads.length,
   };
 
   return rootThread;
@@ -390,6 +389,8 @@ export default function buildThread(annotations, options) {
 
   // Update `replyCount` and `depth` properties
   thread = countRepliesAndDepth(thread, -1);
+
+  thread.totalChildren = thread.children.length;
 
   return thread;
 }

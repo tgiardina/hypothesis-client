@@ -304,7 +304,17 @@ describe('sidebar/util/build-thread', function () {
 
   describe('filtering', function () {
     context('when there is an active filter', function () {
-      it('shows only annotations that match the filter', function () {
+      it('correctly counts the resulting `totalChildren` on the root thread', () => {
+        const rootThread = buildThread(SIMPLE_FIXTURE, {
+          filterFn: function (annot) {
+            return annot.text.match(/first/);
+          },
+        });
+
+        assert.equal(rootThread.totalChildren, 1);
+      });
+
+      it('shows only annotations that match the filter', () => {
         const threads = createThread(
           SIMPLE_FIXTURE,
           {
@@ -314,6 +324,7 @@ describe('sidebar/util/build-thread', function () {
           },
           ['visible']
         );
+
         assert.deepEqual(threads, [
           {
             annotation: SIMPLE_FIXTURE[0],
@@ -503,6 +514,19 @@ describe('sidebar/util/build-thread', function () {
           replyCount: 0,
         },
       ]);
+    });
+
+    it('correctly counts the `totalChildren` on the root thread', () => {
+      const rootThread = buildThread(SIMPLE_FIXTURE, {});
+      // There are 2 immediate children
+      assert.equal(rootThread.totalChildren, 2);
+    });
+
+    it('does not add `totalChildren` to non-root threads', () => {
+      const rootThread = buildThread(SIMPLE_FIXTURE, {});
+
+      assert.isUndefined(rootThread.children[0].totalChildren);
+      assert.isUndefined(rootThread.children[0].children[0].totalChildren);
     });
   });
 
