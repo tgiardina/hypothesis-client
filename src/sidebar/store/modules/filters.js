@@ -169,10 +169,21 @@ function changeFocusModeUser(user) {
  * @param {FilterOption} filterOption
  */
 function setFilter(filterName, filterOption) {
-  return {
-    type: actions.SET_FILTER,
-    filterName,
-    filterOption,
+  return (dispatch, getState) => {
+    // If there is a filter conflict with focusFilters, deactivate focus
+    // mode to prevent unintended collisions and let the new filter value
+    // take precedence.
+    if (getState().filters.focusFilters?.[filterName]) {
+      dispatch({
+        type: actions.SET_FOCUS_MODE,
+        active: false,
+      });
+    }
+    dispatch({
+      type: actions.SET_FILTER,
+      filterName,
+      filterOption,
+    });
   };
 }
 
@@ -263,6 +274,10 @@ const getFilterValues = createSelector(
   }
 );
 
+function getFocusFilters(state) {
+  return state.focusFilters;
+}
+
 /**
  * Are there currently any active (applied) filters?
  */
@@ -285,6 +300,7 @@ function hasAppliedFilter(state) {
  * @prop {(filterName: string) => FilterOption|undefined} getFilter
  * @prop {() => Object<string,FilterOption>} getFilters
  * @prop {() => Object<string,string>} getFilterValues
+ * @prop {() => Object<string,FilterOption>} getFocusFilters
  * @prop {() => boolean} hasAppliedFilter
  */
 
@@ -304,6 +320,7 @@ export default {
     getFilter,
     getFilters,
     getFilterValues,
+    getFocusFilters,
     hasAppliedFilter,
   },
 };
