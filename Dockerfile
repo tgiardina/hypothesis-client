@@ -4,6 +4,7 @@
 #
 # Alpine is updated every 6 months so all packages are pretty recent.
 FROM alpine:3.12
+WORKDIR /usr/src/app
 
 RUN apk update && apk add --no-cache \
   chromium \
@@ -18,3 +19,7 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
 # Enable test scripts to detect that they are running from the Docker image.
 ENV RUNNING_IN_DOCKER true
+
+# See: https://github.com/hypothesis/client/issues/2817
+COPY . .
+RUN make build
