@@ -8,6 +8,7 @@
 
 module.exports = {
   bundles: {
+    bootstrap: ['bootstrap'],
     katex: ['katex'],
     sentry: ['@sentry/browser'],
     showdown: ['showdown'],

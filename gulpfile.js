@@ -149,6 +149,7 @@ const cssBundles = [
   './src/styles/sidebar/sidebar.scss',
 
   // Vendor
+  './node_modules/bootstrap/dist/css/bootstrap.min.css',  
   './node_modules/katex/dist/katex.min.css',
 ];
 
