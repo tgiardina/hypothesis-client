@@ -56,8 +56,10 @@ $color-shadow--sidebar: color.scale($color-shadow, $alpha: -50%);
 $color-focus-outline: #51a7e8;
 $color-focus-shadow: color.scale($color-focus-outline, $alpha: -50%);
 
-$color-highlight: rgba(255, 255, 60, 0.4);
-$color-highlight-second: rgba(206, 206, 60, 0.4);
+$color-highlight-yellow: rgba(255, 255, 60);
+$color-highlight-green: rgba(124,252,0);
+$color-highlight-purple: rgba(255,0,255);
+$color-highlight-red: rgba(255,0,0);
 $color-highlight-focused: rgba(156, 230, 255, 0.5);
 
 // Scaffolding

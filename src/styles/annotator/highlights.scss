@@ -1,3 +1,4 @@
+@use 'sass:color';
 @use '../variables' as var;
 @use "../mixins/a11y";
 
@@ -10,15 +11,48 @@
 // of the annotated document when highlights are enabled/disabled.
 .hypothesis-highlights-always-on {
   .hypothesis-svg-highlight {
-    fill: var.$color-highlight;
+    &.hypothesis-highlight-yellow {
+      fill: color.change(var.$color-highlight-yellow, $alpha: 0.4);
+    }
+    &.hypothesis-highlight-green {
+      fill: color.change(var.$color-highlight-green, $alpha: 0.4);
+    }    
+    &.hypothesis-highlight-purple {
+      fill: color.change(var.$color-highlight-purple, $alpha: 0.4);
+    }    
+    &.hypothesis-highlight-red {
+      fill: color.change(var.$color-highlight-red, $alpha: 0.4);
+    }    
 
     &.is-opaque {
-      fill: yellow;
+      &.hypothesis-highlight-yellow {
+        fill: var.$color-highlight-yellow;
+      }
+      &.hypothesis-highlight-green {
+        fill: var.$color-highlight-green;
+      }    
+      &.hypothesis-highlight-purple {
+        fill: var.$color-highlight-purple;
+      }    
+      &.hypothesis-highlight-red {
+        fill: var.$color-highlight-red;
+      }    
     }
   }
 
   .hypothesis-highlight {
-    background-color: var.$color-highlight;
+    &.hypothesis-highlight-yellow {
+      background-color: color.change(var.$color-highlight-yellow, $alpha: 0.4);
+    }
+    &.hypothesis-highlight-green {
+      background-color: color.change(var.$color-highlight-green, $alpha: 0.4);
+    }    
+    &.hypothesis-highlight-purple {
+      background-color: color.change(var.$color-highlight-purple, $alpha: 0.4);
+    }    
+    &.hypothesis-highlight-red {
+      background-color: color.change(var.$color-highlight-red, $alpha: 0.4);
+    }    
 
     // For PDFs, we still create highlight elements to wrap the text but the
     // highlight effect is created by another element.
@@ -44,7 +78,19 @@
 
     // Give a highlight inside a larger highlight a different color to stand out.
     & .hypothesis-highlight {
-      background-color: var.$color-highlight-second;
+      &.hypothesis-highlight-yellow {
+        background-color: color.adjust(color.change(var.$color-highlight-yellow, $alpha: 0.4), $red: -50, $green: -50, $blue: -50);
+      }
+      &.hypothesis-highlight-green {
+        background-color: color.adjust(color.change(var.$color-highlight-green, $alpha: 0.4), $red: -50, $green: -50, $blue: -50);
+      }    
+      &.hypothesis-highlight-purple {
+        background-color: color.adjust(color.change(var.$color-highlight-purple, $alpha: 0.4), $red: -50, $green: -50, $blue: -50);
+      }    
+      &.hypothesis-highlight-red {
+        background-color: color.adjust(color.change(var.$color-highlight-red, $alpha: 0.4), $red: -50, $green: -50, $blue: -50);
+      }    
+
       &.is-transparent {
         background-color: transparent;
       }

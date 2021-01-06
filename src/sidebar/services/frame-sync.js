@@ -1,6 +1,7 @@
 import debounce from 'lodash.debounce';
 
 import bridgeEvents from '../../shared/bridge-events';
+import * as colorize from '../../shims/colorize';
 import Discovery from '../../shared/discovery';
 import uiConstants from '../ui-constants';
 import * as metadata from '../util/annotation-metadata';
@@ -18,6 +19,7 @@ export function formatAnnot(ann) {
   return {
     tag: ann.$tag,
     msg: {
+      color: colorize.translateTags(ann.tags),
       document: ann.document,
       target: ann.target,
       uri: ann.uri,
@@ -34,6 +36,8 @@ export function formatAnnot(ann) {
 export default function FrameSync(annotationsService, bridge, store) {
   // Set of tags of annotations that are currently loaded into the frame
   const inFrame = new Set();
+  // Hash map from tagId to tag names.
+  const annotTags = {};
 
   /**
    * Watch for changes to the set of annotations displayed in the sidebar and
@@ -48,7 +52,7 @@ export default function FrameSync(annotationsService, bridge, store) {
       ([annotations, frames], [prevAnnotations]) => {
         let publicAnns = 0;
         const inSidebar = new Set();
-        const added = [];
+        const updated = [];
 
         annotations.forEach(function (annot) {
           if (metadata.isReply(annot)) {
@@ -61,8 +65,8 @@ export default function FrameSync(annotationsService, bridge, store) {
           }
 
           inSidebar.add(annot.$tag);
-          if (!inFrame.has(annot.$tag)) {
-            added.push(annot);
+          if (!inFrame.has(annot.$tag) || annotTags[annot.$tag] !== annot.tags) {
+            updated.push(annot);
           }
         });
         const deleted = prevAnnotations.filter(function (annot) {
@@ -72,10 +76,11 @@ export default function FrameSync(annotationsService, bridge, store) {
         // We currently only handle adding and removing annotations from the frame
         // when they are added or removed in the sidebar, but not re-anchoring
         // annotations if their selectors are updated.
-        if (added.length > 0) {
-          bridge.call('loadAnnotations', added.map(formatAnnot));
-          added.forEach(function (annot) {
+        if (updated.length > 0) {
+          bridge.call('loadAnnotations', updated.map(formatAnnot));
+          updated.forEach(function (annot) {
             inFrame.add(annot.$tag);
+            annotTags[annot.$tag] = annot.tags;
           });
         }
         deleted.forEach(function (annot) {
