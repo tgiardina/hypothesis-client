@@ -122,7 +122,7 @@ function SelectionTabs({ isLoading, settings }) {
           label="General"
           onSelect={() => selectTab(uiConstants.TAB_GENERAL)}
         >
-          General
+          Categories
         </Tab>        
         <Tab
           count={annotationCount}
