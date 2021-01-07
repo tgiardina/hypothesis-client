@@ -50,7 +50,6 @@ export default function FrameSync(annotationsService, bridge, store) {
       store.subscribe,
       [() => store.checkedAnnotations(), () => store.frames()],
       ([annotations, frames], [prevAnnotations]) => {
-        console.log("woo");
         let publicAnns = 0;
         const inSidebar = new Set();
         const updated = [];
