@@ -6,4 +6,5 @@ export default {
   POLICY_MAKERS: 'policy makers',
   EXPERTS: 'experts',
   COMPARISONS: 'comparisons',
+  EDITING: 'editing',
 };

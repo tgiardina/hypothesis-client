@@ -2,8 +2,6 @@ import { createElement } from 'preact';
 import { useState } from 'preact/hooks';
 
 import propTypes from 'prop-types';
-import { useStoreProxy } from '../store/use-store';
-import { withServices } from '../util/service-context';
 
 /**
  * @typedef {import('../../types/config').MergedConfig} MergedConfig
@@ -13,6 +11,11 @@ import { withServices } from '../util/service-context';
  * @typedef CategoryProps
  * @prop {string} name - name of the category
  * @prop {string} color - color associated with the category
+ * @prop {function} onCheck - On check event
+ *  (name) => void
+ * @prop {function} onUncheck - On uncheck event
+ *  (name) => void* 
+ * @prop {boolean} defaultValue - the default value* 
  */
 
 /**
@@ -21,16 +24,15 @@ import { withServices } from '../util/service-context';
  *
  * @param {CategoryProps} props
  */
-function Category({ name, color }) {
-  const store = useStoreProxy();
-  const [isChecked, setChecked] = useState(store.isCategoryChecked(name));  
+function Category({ name, color, onCheck, onUncheck, defaultValue }) {
+  const [isChecked, setChecked] = useState(defaultValue);  
   const toggle = () => {
     const isNowChecked = !isChecked;
     setChecked(isNowChecked)
     if(isNowChecked) {
-      store.showCategories([name])
+      onCheck(name)
     } else {
-      store.hideCategories([name])
+      onUncheck(name)
     }
   }
 
@@ -62,6 +64,9 @@ function Category({ name, color }) {
 Category.propTypes = {
   name: propTypes.string.isRequired,
   color: propTypes.string.isRequired,
+  onCheck: propTypes.func.isRequired,
+  onUncheck: propTypes.func.isRequired,  
+  defaultValue: propTypes.bool,  
 };
 
-export default withServices(Category);
+export default Category;

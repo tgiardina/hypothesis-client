@@ -12,6 +12,8 @@ import AnnotationPublishControl from './annotation-publish-control';
 import MarkdownEditor from './markdown-editor';
 import TagEditor from './tag-editor';
 
+import Categories from '../category-constants';
+
 /**
  * @typedef {import("../../types/api").Annotation} Annotation
  * @typedef {import("../../types/config").MergedConfig} MergedConfig
@@ -103,6 +105,7 @@ function AnnotationEditor({
   };
 
   const onSave = async () => {
+    onRemoveTag(Categories.EDITING)    
     // If there is any content in the tag editor input field that has
     // not been committed as a tag, go ahead and add it as a tag
     // See https://github.com/hypothesis/product-backlog/issues/1122

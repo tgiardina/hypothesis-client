@@ -105,7 +105,7 @@ function init() {
     // app
     nextTag: 1,
     // The visible categories
-    categories: new Set([Categories.ESSENTIAL]),
+    categories: new Set([Categories.EDITING, Categories.ESSENTIAL]),
   };
 }
 
@@ -465,6 +465,13 @@ const annotationCount = createSelector(
 );
 
 /**
+ * The categories currently showing
+ *
+ * @type {(state: any) => Set<string>}
+ */
+const categories = (state) => state.categories;
+
+/**
  * Does the annotation indicated by `id` exist in the collection?
  *
  * @param {string} id
@@ -644,6 +651,7 @@ export default storeModule({
   selectors: {
     annotationCount,
     annotationExists,
+    categories,
     findAnnotationByID,
     findIDsForTags,
     focusedAnnotations,

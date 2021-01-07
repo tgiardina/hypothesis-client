@@ -1,8 +1,7 @@
-import { createElement } from 'preact';
+import { createElement, Fragment } from 'preact';
 
 import propTypes from 'prop-types';
-import { useStoreProxy } from '../store/use-store';
-import { withServices } from '../util/service-context';
+import Categories from '../category-constants'
 
 import Category from './category';
 
@@ -12,35 +11,54 @@ import Category from './category';
 
 /**
  * @typedef CategorySelectorProps
- * @prop {Object} frameSync - Injected service
+ * @prop {function} onCheck - On check event
+ *  (name) => void
+ * @prop {function} onUncheck - On uncheck event
+ *  (name) => void
+ * @prop {Set<string>} [defaultValue=[]] - Which categories should be preselected
  */
 
 /**
- * A "top-level" `Thread`, rendered as a "card" in the sidebar. A `Thread`
- * renders its own child `Thread`s within itself.
+ * Displays category options.
  *
  * @param {CategorySelectorProps} props
  */
-function CategorySelector({ frameSync }) {
-  const store = useStoreProxy();
-
+function CategorySelector({ onCheck, onUncheck, defaultValue=new Set() }) {
   return (
     /* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
-    <div
-      className='card'
-    >
-      <Category name="essential" color="yellow" />
-      <Category name="policy makers" color="green" />      
-      <Category name="experts" color="purple" />            
-      <Category name="comparisons" color="red" />                  
-    </div>
+    <Fragment>
+      <Category 
+        name={Categories.ESSENTIAL}
+        color="yellow" 
+        onCheck={onCheck} 
+        onUncheck={onUncheck} 
+        defaultValue={defaultValue.has(Categories.ESSENTIAL)} />
+      <Category 
+        name={Categories.POLICY_MAKERS} 
+        color="green" 
+        onCheck={onCheck} 
+        onUncheck={onUncheck}
+        defaultValue={defaultValue.has(Categories.POLICY_MAKERS)} />
+      <Category 
+        name={Categories.EXPERTS} 
+        color="purple" 
+        onCheck={onCheck} 
+        onUncheck={onUncheck}
+        defaultValue={defaultValue.has(Categories.EXPERTS)} />
+      <Category 
+        name={Categories.COMPARISONS} 
+        color="red" 
+        onCheck={onCheck} 
+        onUncheck={onUncheck}
+        defaultValue={defaultValue.has(Categories.COMPARISONS)} />
+    </Fragment>
   );
 }
 
 CategorySelector.propTypes = {
-  frameSync: propTypes.object.isRequired,
+  onCheck: propTypes.func.isRequired,
+  onUncheck: propTypes.func.isRequired,
+  defaultValue: propTypes.instanceOf(Set)
 };
 
-CategorySelector.injectedProps = ['frameSync'];
-
-export default withServices(CategorySelector);
+export default CategorySelector;
