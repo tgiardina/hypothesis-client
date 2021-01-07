@@ -5,6 +5,7 @@ import propTypes from 'prop-types';
 import { useStoreProxy } from '../store/use-store';
 import uiConstants from '../ui-constants';
 import { withServices } from '../util/service-context';
+import CategorySelector from './category-selector';
 
 import NewNoteBtn from './new-note-btn';
 import SvgIcon from '../../shared/components/svg-icon';
@@ -115,6 +116,15 @@ function SelectionTabs({ isLoading, settings }) {
     <div className="selection-tabs-container">
       <div className="selection-tabs" role="tablist">
         <Tab
+          count={0}
+          isWaitingToAnchor={isWaitingToAnchorAnnotations}
+          isSelected={selectedTab === uiConstants.TAB_GENERAL}
+          label="General"
+          onSelect={() => selectTab(uiConstants.TAB_GENERAL)}
+        >
+          General
+        </Tab>        
+        <Tab
           count={annotationCount}
           isWaitingToAnchor={isWaitingToAnchorAnnotations}
           isSelected={selectedTab === uiConstants.TAB_ANNOTATIONS}
@@ -163,6 +173,9 @@ function SelectionTabs({ isLoading, settings }) {
           />{' '}
           button.
         </div>
+      )}
+      {selectedTab === uiConstants.TAB_GENERAL && (
+        <CategorySelector />
       )}
     </div>
   );

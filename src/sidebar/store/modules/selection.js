@@ -70,7 +70,7 @@ function init(settings) {
     // match the currently-applied filters
     forcedVisible: {},
 
-    selectedTab: uiConstants.TAB_ANNOTATIONS,
+    selectedTab: uiConstants.TAB_GENERAL,
     // Key by which annotations are currently sorted.
     sortKey: TAB_SORTKEY_DEFAULT[uiConstants.TAB_ANNOTATIONS],
   };

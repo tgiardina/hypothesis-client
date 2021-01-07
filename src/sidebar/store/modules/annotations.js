@@ -13,6 +13,7 @@
  */
 
 import { createSelector } from 'reselect';
+import clone from 'lodash/clone';
 
 import * as metadata from '../../util/annotation-metadata';
 import { countIf, toTrueMap, trueKeys } from '../../util/collections';
@@ -20,6 +21,7 @@ import * as util from '../util';
 import { storeModule } from '../create-store';
 
 import route from './route';
+import Categories from '../../category-constants';
 
 /**
  * Return a copy of `current` with all matching annotations in `annotations`
@@ -102,6 +104,8 @@ function init() {
     // The local tag to assign to the next annotation that is loaded into the
     // app
     nextTag: 1,
+    // The visible categories
+    categories: new Set([Categories.ESSENTIAL]),
   };
 }
 
@@ -170,6 +174,15 @@ const update = {
     return { annotations: anns };
   },
 
+  HIDE_CATEGORIES: function (state, action) {
+    const shown = clone(state.categories);
+    action.categories.forEach(category => shown.delete(category));
+
+    return {
+      categories: shown,
+    };
+  },      
+
   HIGHLIGHT_ANNOTATIONS: function (state, action) {
     return { highlighted: action.highlighted };
   },
@@ -179,6 +192,15 @@ const update = {
       annotations: [...action.remainingAnnotations],
     };
   },
+
+  SHOW_CATEGORIES: function (state, action) {
+    const shown = clone(state.categories);
+    action.categories.forEach(category => shown.add(category));
+
+    return {
+      categories: shown,
+    };
+  },    
 
   UNHIDE_ANNOTATION: function (state, action) {
     const anns = state.annotations.map(function (ann) {
@@ -323,6 +345,20 @@ function hideAnnotation(id) {
 }
 
 /**
+ * Hide annotations with these categories from view.
+ *
+ * @param {String[]} categories - Array of categories to mark visible.
+ */
+function hideCategories(categories) {
+  return function (dispatch, getState) {
+    dispatch({
+      type: actions.HIDE_CATEGORIES,
+      categories: categories,
+    });
+  };
+}
+
+/**
  * Highlight annotations with the given `ids`.
  *
  * This is used to indicate the specific annotation in a thread that was
@@ -356,6 +392,20 @@ export function removeAnnotations(annotations) {
       type: actions.REMOVE_ANNOTATIONS,
       annotationsToRemove: annotations,
       remainingAnnotations,
+    });
+  };
+}
+
+/**
+ * Add these categories to the current collection of visible categories.
+ *
+ * @param {String[]} categories - Array of categories to mark visible.
+ */
+function showCategories(categories) {
+  return function (dispatch, getState) {
+    dispatch({
+      type: actions.SHOW_CATEGORIES,
+      categories: categories,
     });
   };
 }
@@ -413,15 +463,6 @@ const annotationCount = createSelector(
   state => state.annotations,
   annotations => countIf(annotations, metadata.isAnnotation)
 );
-
-/**
- * Retrieve all annotations currently in the store
- *
- * @type {(state: any) => Annotation[]}
- */
-function allAnnotations(state) {
-  return state.annotations;
-}
 
 /**
  * Does the annotation indicated by `id` exist in the collection?
@@ -554,6 +595,35 @@ function savedAnnotations(state) {
   });
 }
 
+/**
+ * Retrieve all annotations with visible categories currently in the store.
+ *
+ * @type {(state: any ) => Annotation[]}
+ */
+const checkedAnnotations = createSelector(
+  state => state.annotations,
+  state => state.categories,
+  (annots, categories) => {
+    return annots.filter((annot) => {
+      let isVisible = false;
+      for(const tag of annot.tags) {
+        if(categories.has(tag)) {
+          isVisible = true;
+          break;
+        }
+      }
+      return isVisible;
+    })    
+  }
+)
+
+/**
+ * Retrieve whether category is checked (active).
+ *
+ * @return {boolean}
+ */
+const isCategoryChecked = (state, category) => state.categories.has(category)
+
 export default storeModule({
   init: init,
   namespace: 'annotations',
@@ -563,14 +633,15 @@ export default storeModule({
     clearAnnotations,
     focusAnnotations,
     hideAnnotation,
+    hideCategories,
     highlightAnnotations,
     removeAnnotations,
+    showCategories,
     unhideAnnotation,
     updateAnchorStatus,
     updateFlagStatus,
   },
   selectors: {
-    allAnnotations,
     annotationCount,
     annotationExists,
     findAnnotationByID,
@@ -584,5 +655,7 @@ export default storeModule({
     noteCount,
     orphanCount,
     savedAnnotations,
+    checkedAnnotations,        
+    isCategoryChecked,
   },
 });

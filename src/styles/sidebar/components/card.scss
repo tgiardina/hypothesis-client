@@ -1,0 +1,8 @@
+@use "../../variables" as var;
+@use "../../mixins/layout";
+@use "../../mixins/molecules";
+@use "../../mixins/utils";
+
+.card {
+  @include molecules.card;
+}

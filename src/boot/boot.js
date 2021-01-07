@@ -170,14 +170,12 @@ export function bootSidebarApp(doc, config) {
 
     // Vendor code required by sidebar.bundle.js
     'scripts/sentry.bundle.js',
-    'scripts/bootstrap.bundle.js',    
     'scripts/katex.bundle.js',
     'scripts/showdown.bundle.js',
 
     // The sidebar app
     'scripts/sidebar.bundle.js',
-    
-    'styles/bootstrap.min.css',
+
     'styles/katex.min.css',
     'styles/sidebar.css',
   ]);

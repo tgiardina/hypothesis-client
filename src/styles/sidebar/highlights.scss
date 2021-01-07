@@ -1,0 +1,32 @@
+@use 'sass:color';
+@use '../variables' as var;
+@use "../mixins/a11y";
+
+.hypothesis-highlight {
+  &.hypothesis-highlight-yellow {
+    background-color: color.change(var.$color-highlight-yellow, $alpha: 0.4);
+  }
+  &.hypothesis-highlight-green {
+    background-color: color.change(var.$color-highlight-green, $alpha: 0.4);
+  }    
+  &.hypothesis-highlight-purple {
+    background-color: color.change(var.$color-highlight-purple, $alpha: 0.4);
+  }    
+  &.hypothesis-highlight-red {
+    background-color: color.change(var.$color-highlight-red, $alpha: 0.4);
+  }    
+  
+  // Make highlights visible to screen readers.
+  // See also - https://developer.paciellogroup.com/blog/2017/12/short-note-on-making-your-mark-more-accessible/.
+  &::before {
+    @include a11y.screen-reader-only;
+    
+    // nb. The leading/trailing spaces are intended to ensure the text is treated
+    // as separate words by assisitve technologies from the content before/after it.
+    content: ' annotation start ';
+  }
+  &::after {
+    @include a11y.screen-reader-only;
+    content: ' annotation end ';
+  }
+}
