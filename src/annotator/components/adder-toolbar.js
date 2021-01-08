@@ -108,12 +108,12 @@ export default function AdderToolbar({
           label="Annotate"
           shortcut={annotateShortcut}
         />
-        <ToolbarButton
+        {/* <ToolbarButton
           icon="highlight"
           onClick={e => handleCommand(e, 'highlight')}
           label="Highlight"
           shortcut={highlightShortcut}
-        />
+        /> */}
         {annotationCount > 0 && (
           <div className="annotator-adder-actions__separator" />
         )}

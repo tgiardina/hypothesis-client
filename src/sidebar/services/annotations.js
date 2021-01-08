@@ -13,6 +13,7 @@ import {
   sharedPermissions,
 } from '../util/permissions';
 import { generateHexString } from '../util/random';
+import Categories from '../category-constants';
 import uiConstants from '../ui-constants';
 
 // @inject
@@ -93,6 +94,7 @@ export default function annotationsService(api, store) {
    * @param {Date} now
    */
   function create(annotationData, now = new Date()) {
+    annotationData.tags = [Categories.EDITING]
     const annotation = initialize(annotationData, now);
 
     store.addAnnotations([annotation]);
@@ -103,7 +105,7 @@ export default function annotationsService(api, store) {
     // Create a draft unless it's a highlight
     if (!metadata.isHighlight(annotation)) {
       store.createDraft(annotation, {
-        tags: annotation.tags,
+        tags: [Categories.EDITING], // annotation.tags,
         text: annotation.text,
         isPrivate: !metadata.isPublic(annotation),
       });

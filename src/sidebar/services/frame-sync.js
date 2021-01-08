@@ -6,7 +6,6 @@ import Discovery from '../../shared/discovery';
 import uiConstants from '../ui-constants';
 import * as metadata from '../util/annotation-metadata';
 import { watch } from '../util/watch';
-import Categories from '../category-constants';
 
 /**
  * Return a minimal representation of an annotation that can be sent from the
@@ -115,7 +114,7 @@ export default function FrameSync(annotationsService, bridge, store) {
   function setupSyncFromFrame() {
     // A new annotation, note or highlight was created in the frame
     bridge.on('beforeCreateAnnotation', function (event) {
-      const annot = Object.assign({}, event.msg, { $tag: event.tag, tags: [Categories.EDITING] });
+      const annot = Object.assign({}, event.msg, { $tag: event.tag });
       // If user is not logged in, we can't really create a meaningful highlight
       // or annotation. Instead, we need to open the sidebar, show an error,
       // and delete the (unsaved) annotation so it gets un-selected in the
