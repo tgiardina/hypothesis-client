@@ -19,8 +19,7 @@ import propTypes from 'prop-types';
  */
 
 /**
- * A "top-level" `Thread`, rendered as a "card" in the sidebar. A `Thread`
- * renders its own child `Thread`s within itself.
+ * A category to select.
  *
  * @param {CategoryProps} props
  */

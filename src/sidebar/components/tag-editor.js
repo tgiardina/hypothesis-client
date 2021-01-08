@@ -27,7 +27,7 @@ function TagEditor({
   onRemoveTag,
 }) {
   return (
-    <CategorySelector onCheck={onAddTag} onUncheck={onRemoveTag} />
+    <CategorySelector onCheck={onAddTag} onUncheck={onRemoveTag} isCompact={true} />
   );
 }
 
