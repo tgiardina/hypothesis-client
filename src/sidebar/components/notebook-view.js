@@ -37,6 +37,7 @@ function NotebookView({ loadAnnotationsService }) {
 
   const rootThread = useRootThread();
   const groupName = focusedGroup?.name ?? '…';
+  console.log(rootThread);
 
   const hasResults = rootThread.totalChildren > 0;
   const threadCount =

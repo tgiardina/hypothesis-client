@@ -128,9 +128,6 @@ FilterStatusPanel.propTypes = {
  */
 function SelectionFilterStatus({ filterState, rootThread }) {
   const store = useStoreProxy();
-  const directLinkedId = store.directLinkedAnnotationId();
-  // The total number of top-level annotations (visible or not)
-  const totalCount = store.annotationCount();
   // Count the number of visible annotations—top-level only
   const visibleAnnotationCount = (rootThread.children || []).filter(
     thread => thread.annotation && thread.visible
@@ -146,8 +143,7 @@ function SelectionFilterStatus({ filterState, rootThread }) {
   // annotations and filtered annotations, don't display the total number
   // when in user-focus mode because the numbers won't appear to make sense.
   // Don't display total count, either, when viewing a direct-linked annotation.
-  const showCount = !filterState.focusConfigured && !directLinkedId;
-  const buttonText = showCount ? `Show all (${totalCount})` : 'Show all';
+  const buttonText = "Return";
 
   const button = (
     <Button

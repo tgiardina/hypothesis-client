@@ -5,7 +5,7 @@ import propTypes from 'prop-types';
 import { useStoreProxy } from '../store/use-store';
 import uiConstants from '../ui-constants';
 import { withServices } from '../util/service-context';
-import CategoryExhibiter from './category-exhibiter';
+import CategoryView from './category-view';
 
 import NewNoteBtn from './new-note-btn';
 import SvgIcon from '../../shared/components/svg-icon';
@@ -176,7 +176,7 @@ function SelectionTabs({ isLoading, settings }) {
       )}
       {selectedTab === uiConstants.TAB_GENERAL && (
         <div className='card'>        
-          <CategoryExhibiter />
+          <CategoryView />
         </div>
       )}
     </div>

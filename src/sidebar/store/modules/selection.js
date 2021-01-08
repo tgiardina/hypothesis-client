@@ -90,6 +90,7 @@ const setTab = (newTab, oldTab) => {
 
 const resetSelection = () => {
   return {
+    selectedTab: uiConstants.TAB_GENERAL,
     forcedVisible: {},
     selected: {},
   };
