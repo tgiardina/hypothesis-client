@@ -48,7 +48,7 @@ export default function FrameSync(annotationsService, bridge, store) {
 
     watch(
       store.subscribe,
-      [() => store.checkedAnnotations(), () => store.frames()],
+      [() => store.annotations(), () => store.frames()],
       ([annotations, frames], [prevAnnotations]) => {
         let publicAnns = 0;
         const inSidebar = new Set();

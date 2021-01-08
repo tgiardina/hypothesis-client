@@ -454,15 +454,11 @@ function updateFlagStatus(id, isFlagged) {
 
 /* Selectors */
 
-/**
- * Count the number of annotations (as opposed to notes or orphans)
- *
- * @type {(state: any) => number}
- */
-const annotationCount = createSelector(
-  state => state.annotations,
-  annotations => countIf(annotations, metadata.isAnnotation)
-);
+const annotationCount = (state) => annotations(state).length;
+//   createSelector(
+//   state => annotations(state),
+//   annotations => annotations.
+// );
 
 /**
  * The categories currently showing
@@ -607,7 +603,7 @@ function savedAnnotations(state) {
  *
  * @type {(state: any ) => Annotation[]}
  */
-const checkedAnnotations = createSelector(
+const annotations = createSelector(
   state => state.annotations,
   state => state.categories,
   (annots, categories) => {
@@ -663,7 +659,7 @@ export default storeModule({
     noteCount,
     orphanCount,
     savedAnnotations,
-    checkedAnnotations,        
+    annotations,        
     isCategoryChecked,
   },
 });

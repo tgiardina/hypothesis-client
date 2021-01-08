@@ -13,7 +13,7 @@ import threadAnnotations from '../../util/thread-annotations';
  */
 export default function useRootThread() {
   const store = useStoreProxy();
-  const annotations = store.checkedAnnotations();
+  const annotations = store.annotations();
   const query = store.filterQuery();
   const route = store.route();
   const selectionState = store.selectionState();
