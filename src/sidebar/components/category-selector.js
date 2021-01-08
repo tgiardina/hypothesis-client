@@ -1,4 +1,4 @@
-import { createElement, Fragment } from 'preact';
+import { createElement } from 'preact';
 
 import propTypes from 'prop-types';
 import Categories from '../category-constants'

@@ -93,7 +93,7 @@ function Annotation({
         <AnnotationBody annotation={annotation} />
       )}
 
-      {isEditing && <AnnotationEditor annotation={annotation} />}
+      {isEditing && <AnnotationEditor annotation={annotation} />}      
 
       {!isCollapsedReply && (
         <footer className="annotation__footer">

@@ -44,6 +44,7 @@ function AnnotationEditor({
   const [pendingTag, setPendingTag] = useState(
     /** @type {string|null} */ (null)
   );
+  const [isInvalid, setIsInvalid] = useState(false);
 
   const store = useStoreProxy();
   const draft = store.getDraft(annotation);
@@ -105,6 +106,12 @@ function AnnotationEditor({
   };
 
   const onSave = async () => {
+    // Must be > 1 because editing tag doesn't count.
+    if(tags.length === 1) {
+      setIsInvalid(true);
+      return;
+    }
+    setIsInvalid(false);
     onRemoveTag(Categories.EDITING)    
     // If there is any content in the tag editor input field that has
     // not been committed as a tag, go ahead and add it as a tag
@@ -146,9 +153,8 @@ function AnnotationEditor({
       <TagEditor
         onAddTag={onAddTag}
         onRemoveTag={onRemoveTag}
-        onTagInput={setPendingTag}
-        tagList={tags}
       />
+      { isInvalid && <div className="feedback">Please select at least one category!</div> }
       <div className="annotation__form-actions u-layout-row">
         <AnnotationPublishControl
           annotation={annotation}
