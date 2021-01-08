@@ -2,6 +2,19 @@ import { isNodeInRange } from './range-util';
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
 
+function getColorClassName(colors) {
+  let className = "";
+  for(let i = 0; i<Math.min(2,colors.length); i++) {
+    const color = colors[i];
+    if(i === 0) {
+      className += `hypothesis-highlight-${color}`;
+    } else {
+      className += ` hypothesis-secondary-highlight-${color}`;
+    }
+  }
+  return className;
+}
+
 function isCSSPropertySupported(property, value) {
   if (typeof CSS !== 'function' || typeof CSS.supports !== 'function') {
     /* istanbul ignore next */
@@ -56,13 +69,13 @@ function getPdfCanvas(highlightEl) {
  * @param {HTMLElement} highlightEl -
  *   An element that wraps the highlighted text in the transparent text layer
  *   above the PDF.
- * @param {string} color -
- *   The color of the highlight
+ * @param {string} colorsClassName -
+ *   The class names associated with coloring
  * @return {SVGElement|null} -
  *   The SVG graphic element that corresponds to the highlight or `null` if
  *   no PDF page was found below the highlight.
  */
-function drawHighlightsAbovePdfCanvas(highlightEl, color) {
+function drawHighlightsAbovePdfCanvas(highlightEl, colorsClassName) {
   const canvasEl = getPdfCanvas(highlightEl);
   if (!canvasEl || !canvasEl.parentElement) {
     return null;
@@ -125,9 +138,9 @@ function drawHighlightsAbovePdfCanvas(highlightEl, color) {
   rect.setAttribute('height', highlightRect.height.toString());
 
   if (isCssBlendSupported) {
-    rect.setAttribute('class', `hypothesis-svg-highlight hypothesis-highlight-${color}`);
+    rect.setAttribute('class', `hypothesis-svg-highlight ${colorsClassName}`);
   } else {
-    rect.setAttribute('class', `hypothesis-svg-highlight is-opaque hypothesis-highlight-${color}`);
+    rect.setAttribute('class', `hypothesis-svg-highlight is-opaque ${colorsClassName}`);
   }
 
   svgHighlightLayer.appendChild(rect);
@@ -214,11 +227,13 @@ function wholeTextNodesInRange(range) {
  * element of the specified class and returns the highlight Elements.
  *
  * @param {Range} range - Range to be highlighted
+ * @param {string[]} colors - The colors to highlight in
  * @param {string} cssClass - A CSS class to use for the highlight
  * @return {HighlightElement[]} - Elements wrapping text in `normedRange` to add a highlight effect
  */
-export function highlightRange(range, color, cssClass = 'hypothesis-highlight') {
+export function highlightRange(range, colors, cssClass = 'hypothesis-highlight') {
   const textNodes = wholeTextNodesInRange(range);
+  const colorsClassName = getColorClassName(colors);    
 
   // Check if this range refers to a placeholder for not-yet-rendered text in
   // a PDF. These highlights should be invisible.
@@ -261,7 +276,7 @@ export function highlightRange(range, color, cssClass = 'hypothesis-highlight') 
 
     /** @type {HighlightElement} */
     const highlightEl = document.createElement('hypothesis-highlight');
-    highlightEl.className = `${cssClass} hypothesis-highlight-${color}`;
+    highlightEl.className = `${cssClass} ${colorsClassName}`;
 
     nodes[0].parentNode.replaceChild(highlightEl, nodes[0]);
     nodes.forEach(node => highlightEl.appendChild(node));
@@ -271,7 +286,7 @@ export function highlightRange(range, color, cssClass = 'hypothesis-highlight') 
       // above the page's canvas rather than CSS `background-color` on the
       // highlight element. This enables more control over blending of the
       // highlight with the content below.
-      const svgHighlight = drawHighlightsAbovePdfCanvas(highlightEl, color);
+      const svgHighlight = drawHighlightsAbovePdfCanvas(highlightEl, colorsClassName);
       if (svgHighlight) {
         highlightEl.className += ' is-transparent';
 

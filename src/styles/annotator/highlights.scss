@@ -7,6 +7,24 @@
   fill: transparent;
 }
 
+// Borders if there are multiple colors.
+.hypothesis-secondary-highlight-yellow {
+  border-style: none none none solid;
+  border-color: var.$color-highlight-yellow
+}
+.hypothesis-secondary-highlight-green {
+  border-style: none none none solid;
+  border-color: var.$color-highlight-green;
+}    
+.hypothesis-secondary-highlight-purple {
+  border-style: none none none solid;
+  border-color: var.$color-highlight-purple;
+}    
+.hypothesis-secondary-highlight-red {
+  border-style: none none none solid;
+  border-color: var.$color-highlight-red;
+}    
+
 // `hypothesis-highlights-always-on` is a class that is toggled on the root
 // of the annotated document when highlights are enabled/disabled.
 .hypothesis-highlights-always-on {

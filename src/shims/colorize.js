@@ -15,12 +15,12 @@ const colorMap = {
 */
 export function translateTags(tags) {
   const colorizedTags = Object.keys(colorMap);
-  let color = [defaultColor];
+  let colors = [];
   for(const tag of colorizedTags) {
     if(tags.includes(tag)) {
-      color = [colorMap[tag]];
-      break;
+      colors.push(colorMap[tag]);
     }
   }
-  return color;
+  if(!colors.length) colors.push(defaultColor);
+  return colors;
 }

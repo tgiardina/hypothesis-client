@@ -38,7 +38,7 @@
  *   It is initially `undefined` while anchoring is in progress and then set to
  *   `true` if anchoring failed or `false` if it succeeded.
  * @prop {DocumentMetadata} document
- * @prop {string} color
+ * @prop {string[]} colors
  */
 
 /**

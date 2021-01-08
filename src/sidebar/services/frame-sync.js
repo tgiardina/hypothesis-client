@@ -19,7 +19,7 @@ export function formatAnnot(ann) {
   return {
     tag: ann.$tag,
     msg: {
-      color: colorize.translateTags(ann.tags),
+      colors: colorize.translateTags(ann.tags),
       document: ann.document,
       target: ann.target,
       uri: ann.uri,
