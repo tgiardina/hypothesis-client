@@ -2,10 +2,10 @@ import { bootHypothesisClient, bootSidebarApp } from '../boot';
 import { $imports } from '../boot';
 
 function assetUrl(url) {
-  return `https://marginal.ly/client/build/${url}`;
+  return `https://marginal.ly/client/${url}`;
 }
 
-describe('bootstrap', function () {
+describe('boot/boot', function () {
   let fakePolyfills;
   let iframe;
 

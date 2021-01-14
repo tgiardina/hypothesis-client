@@ -17,20 +17,48 @@ import { isBrowserSupported } from './browser-check';
 
 if (isBrowserSupported()) {
   const settings = parseJsonConfig(document);
-  const assetRoot = processUrlTemplate(settings.assetRoot || '__ASSET_ROOT__');
   // @ts-ignore - `__MANIFEST__` is injected by the build script
   const manifest = __MANIFEST__;
+  // Use the asset root and sidebar app locations specified in the host page,
+  // if present. This is used by the Hypothesis browser extensions to make the
+  // boot script load assets bundled with the extension.
+  let assetRoot;
+  if (settings.assetRoot) {
+    // The `assetRoot` setting is assumed to point at the root of the contents of
+    // the npm package.
+    assetRoot = settings.assetRoot + 'build/';
+  }
+  let sidebarAppUrl = settings.sidebarAppUrl;
 
-  // Check whether this is the sidebar app (indicated by the presence of a
+  // Otherwise, try to determine the default root URL for assets and the sidebar
+  // application from the location where the boot script is hosted.
+  try {
+    const script = /** @type {HTMLScriptElement} */ (document.currentScript);
+    let scriptUrl = new URL(script.src);
+
+    // We only use the bundled sidebar HTML and assets if the boot script has
+    // its original name. If the `<script>` tag references a custom name
+    // (eg. as in "https://hypothes.is/embed.js") then we skip this and fall
+    // back to the URLs embedded in the boot script.
+    if (scriptUrl.pathname.endsWith('/boot.js')) {
+      assetRoot = assetRoot || new URL('./', scriptUrl).href;
+      sidebarAppUrl = sidebarAppUrl || new URL('app.html', scriptUrl).href;
+    }
+  } catch (e) {
+    // IE does not support `document.currentScript` or the URL constructor.
+  }
+
+  // Otherwise, fall back to hardcoded default URLs.
+  assetRoot = processUrlTemplate(assetRoot || '__ASSET_ROOT__');
+  sidebarAppUrl = processUrlTemplate(sidebarAppUrl || '__SIDEBAR_APP_URL__');
+
+// Check whether this is the sidebar app (indicated by the presence of a
   // `<hypothesis-app>` element) and load the appropriate part of the client.
   if (document.querySelector('hypothesis-app')) {
     bootSidebarApp(document, { assetRoot, manifest, apiUrl: settings.apiUrl });
   } else {
     const notebookAppUrl = processUrlTemplate(
       settings.notebookAppUrl || '__NOTEBOOK_APP_URL__'
-    );
-    const sidebarAppUrl = processUrlTemplate(
-      settings.sidebarAppUrl || '__SIDEBAR_APP_URL__'
     );
     bootHypothesisClient(document, {
       assetRoot,
