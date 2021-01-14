@@ -52,7 +52,7 @@ if (isBrowserSupported()) {
   assetRoot = processUrlTemplate(assetRoot || '__ASSET_ROOT__');
   sidebarAppUrl = processUrlTemplate(sidebarAppUrl || '__SIDEBAR_APP_URL__');
 
-// Check whether this is the sidebar app (indicated by the presence of a
+  // Check whether this is the sidebar app (indicated by the presence of a
   // `<hypothesis-app>` element) and load the appropriate part of the client.
   if (document.querySelector('hypothesis-app')) {
     bootSidebarApp(document, { assetRoot, manifest, apiUrl: settings.apiUrl });
