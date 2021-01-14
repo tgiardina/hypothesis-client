@@ -6,6 +6,8 @@ import { withServices } from '../util/service-context';
 import useRootThread from './hooks/use-root-thread';
 import { useStoreProxy } from '../store/use-store';
 
+import NotebookFilters from './notebook-filters';
+import NotebookResultCount from './notebook-result-count';
 import ThreadList from './thread-list';
 
 /**
@@ -39,31 +41,16 @@ function NotebookView({ loadAnnotationsService }) {
   const groupName = focusedGroup?.name ?? '…';
   console.log(rootThread);
 
-  const hasResults = rootThread.totalChildren > 0;
-  const threadCount =
-    rootThread.totalChildren === 1
-      ? '1 thread'
-      : `${rootThread.totalChildren} threads`;
-  const annotationCount =
-    rootThread.replyCount === 1
-      ? '1 annotation'
-      : `${rootThread.replyCount} annotations`;
-
   return (
     <div className="notebook-view">
       <header className="notebook-view__heading">
-        <h1>{groupName}</h1>
+        <h1 className="notebook-view__group-name">{groupName}</h1>
       </header>
+      <div className="notebook-view__filters">
+        <NotebookFilters />
+      </div>
       <div className="notebook-view__results">
-        {hasResults ? (
-          <span>
-            <h2>{threadCount}</h2> ({annotationCount})
-          </span>
-        ) : (
-          <span>
-            <h2>No results</h2>
-          </span>
-        )}
+        <NotebookResultCount />
       </div>
       <div className="notebook-view__items">
         <ThreadList thread={rootThread} />

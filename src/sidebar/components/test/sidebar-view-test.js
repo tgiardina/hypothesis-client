@@ -51,6 +51,7 @@ describe('SidebarView', () => {
       focusedGroupId: sinon.stub(),
       hasAppliedFilter: sinon.stub(),
       hasFetchedAnnotations: sinon.stub(),
+      hasFetchedProfile: sinon.stub().returns(true),
       hasSelectedAnnotations: sinon.stub(),
       hasSidebarOpened: sinon.stub(),
       isLoading: sinon.stub().returns(false),
@@ -97,6 +98,16 @@ describe('SidebarView', () => {
       wrapper.setProps({});
       assert.calledOnce(fakeLoadAnnotationsService.load);
       assert.calledOnce(fakeStore.clearSelection);
+    });
+
+    it('does not clear selected annotations when group ID is first set on startup', () => {
+      fakeStore.focusedGroupId.returns(null);
+      wrapper = createComponent();
+      fakeStore.focusedGroupId.returns('foobar');
+
+      wrapper.setProps({});
+
+      assert.notCalled(fakeStore.clearSelection);
     });
 
     it('loads annotations when searchURIs change', () => {
