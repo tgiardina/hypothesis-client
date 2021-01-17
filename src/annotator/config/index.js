@@ -30,11 +30,7 @@ export default function configFrom(window_) {
     theme: settings.hostPageSetting('theme'),
     usernameUrl: settings.hostPageSetting('usernameUrl'),
     onLayoutChange: settings.hostPageSetting('onLayoutChange'),
-    openSidebar: settings.hostPageSetting('openSidebar', {
-      allowInBrowserExt: true,
-      // Coerce value to a boolean because it may come from via as a string
-      coerce: toBoolean,
-    }),
+    openSidebar: true,
     query: settings.query,
     requestConfigFromFrame: settings.hostPageSetting('requestConfigFromFrame'),
     services: settings.hostPageSetting('services'),
