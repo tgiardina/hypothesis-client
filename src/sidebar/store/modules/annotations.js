@@ -105,7 +105,7 @@ function init() {
     // app
     nextTag: 1,
     // The visible categories
-    categories: new Set([Categories.EDITING, Categories.ESSENTIAL]),
+    categories: new Set([Categories.EDITING, Categories.ESSENTIAL, Categories.EXPERTS, Categories.POLICY_MAKERS, Categories.COMPARISONS]),
   };
 }
 
